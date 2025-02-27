@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced WebRTC Call</title>
+    <title>WebRTC Video Call & Chat</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         video { width: 45%; border: 2px solid black; margin: 5px; }
@@ -38,7 +38,7 @@
     <script>
         const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
         let localStream, remoteStream, peerConnection, dataChannel;
-        
+
         const localVideo = document.getElementById("localVideo");
         const remoteVideo = document.getElementById("remoteVideo");
         const offerInput = document.getElementById("offer");
@@ -51,10 +51,20 @@
             localVideo.srcObject = localStream;
             peerConnection = new RTCPeerConnection(config);
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            
             dataChannel = peerConnection.createDataChannel("chat");
             setupDataChannel(dataChannel);
-            peerConnection.ontrack = (event) => remoteVideo.srcObject = event.streams[0];
-            peerConnection.onicecandidate = (event) => event.candidate && console.log("ICE Candidate: ", event.candidate);
+
+            peerConnection.ontrack = (event) => {
+                remoteStream = event.streams[0];
+                remoteVideo.srcObject = remoteStream;
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    console.log("ICE Candidate: ", event.candidate);
+                }
+            };
         }
 
         async function generateOffer() {
@@ -66,9 +76,11 @@
         async function connect() {
             const remoteOffer = JSON.parse(offerInput.value);
             await peerConnection.setRemoteDescription(new RTCSessionDescription(remoteOffer));
+
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
             answerInput.value = JSON.stringify(answer);
+
             peerConnection.ondatachannel = (event) => setupDataChannel(event.channel);
         }
 
