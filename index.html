@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Video Call (No Server)</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        video { width: 45%; border: 2px solid black; margin: 5px; }
+        #controls { margin: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>WebRTC Video Call (No Server)</h2>
+
+    <video id="localVideo" autoplay playsinline muted></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+
+    <div id="controls">
+        <button onclick="startCall()">Start Call</button>
+        <button onclick="generateOffer()">Generate Offer</button>
+        <button onclick="connect()">Connect</button>
+        <button onclick="toggleAudio()">Toggle Audio</button>
+        <button onclick="toggleVideo()">Toggle Video</button>
+    </div>
+
+    <h3>SDP Exchange (Copy-Paste or QR Code)</h3>
+    <textarea id="offer" placeholder="Paste Offer SDP here" rows="6" cols="50"></textarea>
+    <button onclick="copyOffer()">Copy Offer</button>
+
+    <textarea id="answer" placeholder="Paste Answer SDP here" rows="6" cols="50"></textarea>
+    <button onclick="copyAnswer()">Copy Answer</button>
+
+    <h3>Text Chat</h3>
+    <input type="text" id="message" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+    <div id="chat"></div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
